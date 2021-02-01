@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudentsPerCourse</title>
+</head>
+<style>
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    padding: 14px 16px;
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 16px;
+  }
+
+  .sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+  }
+
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+
+  @media screen and (max-height: 450px) {
+    .sidenav {
+      padding-top: 15px;
+    }
+
+    .sidenav a {
+      font-size: 18px;
+    }
+  }
+
+
+  .topnav {
+    overflow: hidden;
+    background-color: rgb(97, 96, 102);
+  }
+
+  .topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+
+  .topnav a:hover {
+    background-color: #ddd;
+    color: rgb(44, 26, 209);
+  }
+
+  .topnav a.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .topnav-right {
+    background-color: #4CAF50;
+    float: right;
+  }
+</style>
+
+<body>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="course.html">Courses</a>
+
+    <div class="inside">
+      <a href="student.html">
+        Students
+      </a>
+      <a href="studentperCourse.html">StudentsPerCourse</a>
+
+    </div>
+
+    <a href="trainer.html">Trainers</a>
+    <a href="Assignment.html">Assignments</a>
+    <a href="trainersPerCourse.html">TrainersPerCourse</a>
+  </div>
+
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+
+
+  <div class="card-body px-lg-5 pt-0">
+
+    <!-- Form -->
+    <form class="text-center" style="color: #757575;" action="#!">
+
+      <h2 class="card-header info-color white-text text-center py-4">
+        <strong>Table of StudentsPerCourse</strong>
+      </h2>
+      <div class="topnav">
+        <a>You can add data or edit.</a>
+        <div class="topnav-right">
+          <a onclick="addRow()">Add data</a>
+          <select id="selectstudents" name="selectstudents"></select>
+          <br/>
+          <select id="selectcourses" name="selectcourses"></select>
+          
+          
+        </div>
+      </div>
+
+    </form>
+    <!-- Form -->
+
+  </div>
+
+  
+  <table class="container" id="studentpercourseTable">
+
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Student Name</th>
+        <th>Course</th>
+        <th></th>
+      </tr>
+    </thead>
+    </td>
+
+    <tbody></tbody>
+  </table>
+
+  <script LANGUAGE="JavaScript">
+
+function addRow(x) {
+      var newstudent = document.getElementById("selectstudents");
+      var newcourse = document.getElementById("selectcourses");
+
+      var newRow = {
+        stPerCourse: studentsPerCourse.length + 1,
+        student: newstudent.value,
+        course: newcourse.value
+      };
+      students.push(newRow);
+      const student = new StudentsPerCourse(
+        newRow.stPerCourse,
+        newRow.student,
+        newRow.course,
+
+      );
+      student.addRow();
+      localStorage.setItem("studentsPerCourse_array", JSON.stringify(studentsPerCourse));
+    }
+
+    function StudentsPerCourse(stPerCourse, student, course) {
+      this.stPerCourse = stPerCourse;
+      this.student = student;
+      this.course = course;
+    }
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+
+    
+    StudentsPerCourse.prototype.tbody = document.querySelector("#studentpercourseTable tbody");
+    StudentsPerCourse.prototype.addRow = function () {
+      this.tbody.innerHTML += `
+                <tr>
+                    <th scope="row">${this.stPerCourse}</th>
+                    <td>${this.student}</td>
+                    <td>${this.course}</td>
+                </tr>
+            `;
+    }
+
+    
+
+
+    const students = JSON.parse(localStorage.getItem("students_array"));
+    const courses = JSON.parse(localStorage.getItem("courses_array"));
+    var studentsPerCourseBackup = JSON.parse(localStorage.getItem("studentsPerCourse_array"));
+
+    var studentsPerCourse = [
+            {
+              stPerCourse: "1",
+              student: "Nikos Souliotis",
+              course: "Cb11 Full time Java"
+            },
+            {
+              stPerCourse: "2",
+              student: "Giannis Lallas",
+              course: "Cb11 Part time Java"
+            },
+            {
+              stPerCourse: "3",
+              student: "Athena Sili	",
+              course: "Cb11 Full time C#"
+            },
+            {
+              stPerCourse: "4",
+              student: "Nikos Pappas",
+              course: "Cb11 Part time C#"
+            }
+      
+          ]
+
+    if(studentsPerCourseBackup != null && studentsPerCourseBackup.length > 0){
+      studentsPerCourse = studentsPerCourseBackup;
+    }
+
+    for (let i = 0; i < studentsPerCourse.length; i++) {
+      const studentPerCourse = new StudentsPerCourse(
+        studentsPerCourse[i].stPerCourse,
+        studentsPerCourse[i].student,
+        studentsPerCourse[i].course
+
+      );
+      studentPerCourse.addRow();
+    }
+
+    localStorage.setItem("studentsPerCourse_array", JSON.stringify(studentsPerCourse));
+
+
+    
+  var select = document.getElementById("selectstudents");
+
+  for (const st of students) {
+    var option = document.createElement("option");
+    option.value = st.studentFirstName + " "+ st.studentLastName;
+    option.text = st.studentFirstName + " "+ st.studentLastName;
+    select.appendChild(option);
+  }
+
+  var select = document.getElementById("selectcourses");
+
+  for (const c of courses) {
+    var option = document.createElement("option");
+    option.value = c.courseTitle + " " + c.courseStream + " " + c.courseType;
+    option.text = c.courseTitle + " " + c.courseStream + " " + c.courseType;
+    select.appendChild(option);
+  }
+
+  </script>
+
+</body>
+
+</html>

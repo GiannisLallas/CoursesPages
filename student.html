@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+      color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {
+        padding-top: 15px;
+      }
+
+      .sidenav a {
+        font-size: 18px;
+      }
+    }
+
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      padding: 14px 16px;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 16px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+
+    .topnav {
+      overflow: hidden;
+      background-color: rgb(97, 96, 102);
+    }
+
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: rgb(44, 26, 209);
+    }
+
+    .topnav a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .topnav-right {
+      background-color: #4CAF50;
+      float: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="course.html">Courses</a>
+    <div class="inside">
+      <a href="student.html">
+        Students
+      </a>
+      <a href="studentperCourse.html">StudentsPerCourse</a></div>
+    <a href="trainer.html">Trainers</a>
+    <a href="Assignment.html">Assignments</a>
+    <a href="trainersPerCourse.html">TrainersPerCourse</a>
+  </div>
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+
+
+
+
+  <div class="card-body px-lg-5 pt-0">
+
+    <!-- Form -->
+    <form name="myForm" class="text-center" style="color: #757575;" action="#!">
+
+      <h2 class="card-header info-color white-text text-center py-4">
+        <strong>Table of students</strong>
+      </h2>
+      <div class="topnav">
+        <a>You can add a new student or edit an existing one.</a>
+        <div class="topnav-right">
+          <a onclick="addRow()">Add data</a>
+          <input id="newfn" type="text" name="fname" style="glyph-orientation-horizontal: middle;" placeholder="First Name">
+          <br/>
+          <input id="newln" type="text" name="lname" style="glyph-orientation-horizontal: middle;" placeholder="Last Name">
+        </div>
+      </div>
+
+    </form>
+    <!-- Form -->
+
+  </div>
+
+
+
+  <table class="container" id="myTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th></th>
+      </tr>
+    </thead>
+    </td>
+
+    <tbody></tbody>
+  </table>
+  
+
+  <script LANGUAGE="JavaScript">
+    
+    function validateForm() {
+  var x = document.forms["myForm"]["fname"].value;
+  var y = document.forms["myForm"]["lname"].value;
+
+  if ((x || y)  ==  "" ) {
+    alert("First name and last name must be filled out");
+    return false;
+  } if( /[^a-zA-Z0-9\-\/]/.test(x) ||  /[^a-zA-Z0-9\-\/]/.test(y) ) {
+        alert('Input is not alphanumeric');
+        return false;
+    }
+    return true;
+}
+
+    function editRows() {
+      localStorage.setItem("students_array", JSON.stringify(students));
+    }
+    
+    function addRow(x) {
+      var response = validateForm() ;
+       if(!response) {
+        return;
+       
+      }
+
+      var fname = document.getElementById("newfn");
+      var lname = document.getElementById("newln");
+
+      var newRow = {
+        studentId: students.length + 1,
+        studentFirstName: fname.value,
+        studentLastName: lname.value
+      };
+      students.push(newRow);
+      const student = new Students(
+        newRow.studentId,
+        newRow.studentFirstName,
+        newRow.studentLastName,
+
+      );
+      student.addRow();
+      localStorage.setItem("students_array", JSON.stringify(students));
+    }
+
+    function Students(studentId, studentFirstName, studentLastName, course) {
+      this.studentId = studentId;
+      this.studentFirstName = studentFirstName;
+      this.studentLastName = studentLastName;
+      this.course = course;
+    }
+
+    Students.prototype.tbody = document.querySelector("#myTable tbody");
+    Students.prototype.addRow = function () {
+      this.tbody.innerHTML += `
+                  <tr>
+                      <th scope="row">${this.studentId}</th>
+                      <td contenteditable='true'>${this.studentFirstName}</td>
+                      <td contenteditable='true'>${this.studentLastName}</td>
+                     
+                  
+              
+                  </tr>
+              `;
+    }
+    var studentsBackup = JSON.parse(localStorage.getItem("students_array"));
+
+    var students = [
+      {
+        studentId: "1",
+        studentFirstName: "Nikos",
+        studentLastName: "Souliotis",
+        course: "Java Full time"
+      },
+      {
+        studentId: "2",
+        studentFirstName: "Giannis",
+        studentLastName: "Lallas",
+        course: "Part time Java"
+      },
+      {
+        studentId: "3",
+        studentFirstName: "Athena",
+        studentLastName: "Sili",
+        course: "Full time C#"
+      },
+      {
+        studentId: "4",
+        studentFirstName: "Nikos",
+        studentLastName: "Pappas",
+        course: "Part time C#"
+      },
+
+    ]
+
+    if(studentsBackup != null && studentsBackup.length > 0) {
+      students = studentsBackup;
+    }
+    for (let i = 0; i < students.length; i++) {
+      const student = new Students(
+        students[i].studentId,
+        students[i].studentFirstName,
+        students[i].studentLastName,
+
+      );
+      student.addRow();
+    }
+
+    localStorage.setItem("students_array", JSON.stringify(students));
+
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+
+
+
+  </script>
+</body>
+
+</html>

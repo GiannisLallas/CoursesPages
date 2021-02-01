@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      padding: 14px 16px;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+    
+    th, td {
+      text-align: left;
+      padding: 16px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+
+    .topnav {
+  overflow: hidden;
+  background-color: rgb(97, 96, 102);
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: rgb(44, 26, 209);
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.topnav-right {
+    background-color: #4CAF50;
+  float: right;
+}
+    </style>
+    </head>
+    <body>
+      <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="course.html">Courses</a>
+        <a href="student.html">Students</a>
+        <a href="studentperCourse.html">StudentsPerCourse</a>
+        <a href="trainer.html">Trainers</a>
+        <a href="Assignment.html">Assignments</a>
+        <a href="trainersPerCourse.html">TrainersPerCourse</a>
+      </div>
+  
+    </div>
+          <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+          
+          <script>
+          function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+          }
+          
+          function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+          }
+          </script>
+
+
+        <div class="card-body px-lg-5 pt-0">
+
+            <!-- Form -->
+            <form name="myForm" class="text-center" style="color: #757575;" action="#!">
+    
+                <h2 class="card-header info-color white-text text-center py-4">
+                    <strong>Table of courses</strong>
+                </h2>
+                <div class="topnav">
+                    <a>You can add a new course or edit an existing one.</a>
+                    <div class="topnav-right">
+                      <a onclick="addRow()">Add data</a>
+                      <input id="title" type="text" name="title" style="glyph-orientation-horizontal: middle;" placeholder="Title">
+          <br/>
+          <select id="stream" name="stream" style="max-width: fit-content;" placeholder="Stream">
+            <option value="Full time">Full time</option>
+            <option value="Part time">Part time</option>
+          </select>
+          <br/>
+          <input id="type" type="text" name="type" style="glyph-orientation-horizontal: middle;" placeholder="Type">
+                    </div>
+                  </div>
+                           
+            </form>
+            <!-- Form -->
+    
+        </div>
+            
+        <table class="container" id="myCoursesTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Stream</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+      
+          <tbody></tbody>
+        </table>
+      
+        <script LANGUAGE="JavaScript">
+            function validateForm() {
+  var x = document.forms["myForm"]["title"].value;
+  var y = document.forms["myForm"]["type"].value;
+
+  if ((x || y)  ==  "" ) {
+    alert("Title name and Type name must be filled out");
+    return false;
+  } if( /[^a-zA-Z0-9\-\/]/.test(x) ||  /[^a-zA-Z0-9\-\/]/.test(y) ) {
+        alert('Input is not alphanumeric');
+        return false;
+    }}
+          function addRow(x) {
+            var response = validateForm() ;
+       if(response = 'false') {
+        return;
+       
+      }
+            var title = document.getElementById("title");
+            var stream = document.getElementById("stream");
+            var type = document.getElementById("type");
+      
+            var newRow = {
+              courseId: courses.length + 1,
+              courseTitle: title.value,
+              courseStream: stream.value,
+              courseType: type.value
+            };
+            courses.push(newRow);
+            const course = new Courses(
+              newRow.courseId,
+              newRow.courseTitle,
+              newRow.courseStream,
+              newRow.courseType      
+            );
+            course.addRow();
+            localStorage.setItem("courses_array", JSON.stringify(courses));
+          }
+      
+          function Courses(courseId, courseTitle, courseStream, courseType) {
+            this.courseId = courseId;
+            this.courseTitle = courseTitle;
+            this.courseStream = courseStream;
+            this.courseType = courseType;
+          }
+      
+          Courses.prototype.tbody = document.querySelector("#myCoursesTable tbody");
+          Courses.prototype.addRow = function () {
+            this.tbody.innerHTML += `
+                        <tr>
+                            <th scope="row">${this.courseId}</th>
+                            <td>${this.courseTitle}</td>
+                            <td>${this.courseStream}</td>
+                            <td>${this.courseType}</td>
+                        </tr>
+                    `;
+          }
+          var coursesBackup = JSON.parse(localStorage.getItem("courses_array"));
+
+          var courses = [
+            {
+              courseId: "1",
+              courseTitle: "Cb11",
+              courseStream: "Full time",
+              courseType: "Java"
+            },
+            {
+              courseId: "2",
+              courseTitle: "Cb11",
+              courseStream: "Part time",
+              courseType: "Java"
+            },
+            {
+              courseId: "3",
+              courseTitle: "Cb11",
+              courseStream: "Full time",
+              courseType: "C#"
+            },
+            {
+              courseId: "4",
+              courseTitle: "Cb11",
+              courseStream: "Part time",
+              courseType: "C#"
+            }
+      
+          ]
+      
+          if(coursesBackup != null && coursesBackup.length > 0) {
+              courses = coursesBackup;
+          }
+          for (let i = 0; i < courses.length; i++) {
+            const course = new Courses(
+              courses[i].courseId,
+              courses[i].courseTitle,
+              courses[i].courseStream,
+              courses[i].courseType
+            );
+            course.addRow();
+          }
+      
+          localStorage.setItem("courses_array", JSON.stringify(courses));
+      
+          function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+          }
+      
+          function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+          }
+      
+</script>      
+        
+    
+</body>
+</html>

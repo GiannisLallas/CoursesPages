@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #111;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .sidenav a:hover {
+      color: #f1f1f1;
+    }
+
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .sidenav {
+        padding-top: 15px;
+      }
+
+      .sidenav a {
+        font-size: 18px;
+      }
+    }
+
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      padding: 14px 16px;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 16px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+
+    .topnav {
+      overflow: hidden;
+      background-color: rgb(97, 96, 102);
+    }
+
+    .topnav a {
+      float: left;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: rgb(44, 26, 209);
+    }
+
+    .topnav a.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .topnav-right {
+      background-color: #4CAF50;
+      float: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="course.html">Courses</a>
+    <div class="inside">
+      <a href="student.html">
+        Students
+      </a>
+      <a href="studentperCourse.html">StudentsPerCourse</a></div>
+    <a href="trainer.html">Trainers</a>
+    <a href="Assignment.html">Assignments</a>
+    <a href="trainersPerCourse.html">TrainersPerCourse</a>
+  </div>
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+
+
+
+
+  <div class="card-body px-lg-5 pt-0">
+
+    <!-- Form -->
+    <form name="myForm" class="text-center" style="color: #757575;"  action="#!">
+
+      <h2 class="card-header info-color white-text text-center py-4">
+        <strong>Table of trainers</strong>
+      </h2>
+      <div class="topnav">
+        <a>You can add a new trainer or edit an existing one.</a>
+        <div class="topnav-right">
+          <a onclick="addRow()">Add data</a>
+          <input  id="newfn" type="text"  maxlength="20"  name="fname"  style="glyph-orientation-horizontal: middle;" placeholder="First Name">
+          <br/>
+          <input id="newln" type="text"  maxlength="20"  name="lname"  style="glyph-orientation-horizontal: middle;" placeholder="Last Name">
+        </div>
+      </div>
+
+    </form>
+    <!-- Form -->
+
+  </div>
+
+
+
+  <table class="container" id="myTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th></th>
+      </tr>
+    </thead>
+    </td>
+
+    <tbody></tbody>
+  </table>
+
+  <script LANGUAGE="JavaScript">
+    
+    function validateForm() {
+  var x = document.forms["myForm"]["fname"].value;
+  var y = document.forms["myForm"]["lname"].value;
+
+  if ((x || y)  ==  "" ) {
+    alert("First name and last name must be filled out");
+    return false;
+  } if( /[^a-zA-Z0-9\-\/]/.test(x) ||  /[^a-zA-Z0-9\-\/]/.test(y) ) {
+        alert('Input is not alphanumeric');
+        return false;
+    }
+}
+    
+    function addRow(x) {
+      var response = validateForm() ;
+       if(response = 'false') {
+        return;
+       
+      }
+      var fname = document.getElementById("newfn");
+      var lname = document.getElementById("newln");
+
+      var newRow = {
+        trainerId: trainers.length + 1,
+        trainerFirstName: fname.value,
+        trainerLastName: lname.value
+      };
+      trainers.push(newRow);
+      const trainer = new Trainers(
+        newRow.trainerId,
+        newRow.trainerFirstName,
+        newRow.trainerLastName,
+
+      );
+      trainer.addRow();
+      localStorage.setItem("trainers_array", JSON.stringify(trainers));
+    }
+
+    function Trainers(trainerId, trainerFirstName, trainerLastName) {
+      this.trainerId = trainerId;
+      this.trainerFirstName = trainerFirstName;
+      this.trainerLastName = trainerLastName;
+    }
+
+    Trainers.prototype.tbody = document.querySelector("#myTable tbody");
+    Trainers.prototype.addRow = function () {
+      this.tbody.innerHTML += `
+                  <tr>
+                      <th scope="row">${this.trainerId}</th>
+                      <td>${this.trainerFirstName}</td>
+                      <td>${this.trainerLastName}</td>
+                     
+                  
+              
+                  </tr>
+              `;
+    }
+    var trainersBackup = JSON.parse(localStorage.getItem("trainers_array"));
+
+    var trainers = [
+      {
+        trainerId: "1",
+        trainerFirstName: "Zelimir",
+        trainerLastName: "Obradovic"
+      },
+      {
+        trainerId: "2",
+        trainerFirstName: "Kostas",
+        trainerLastName: "Minaidis"
+      },
+      {
+        trainerId: "3",
+        trainerFirstName: "Ser",
+        trainerLastName: "Alex"
+      },
+      {
+        trainerId: "4",
+        trainerFirstName: "Joje",
+        trainerLastName: "Mourinhio"
+      },
+
+    ]
+
+    if(trainersBackup != null && trainersBackup.length > 0) {
+      trainers = trainersBackup;
+    }
+    for (let i = 0; i < trainers.length; i++) {
+      const trainer = new Trainers(
+        trainers[i].trainerId,
+        trainers[i].trainerFirstName,
+        trainers[i].trainerLastName,
+
+      );
+      trainer.addRow();
+    }
+
+    localStorage.setItem("trainers_array", JSON.stringify(trainers));
+
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+
+
+
+  </script>
+</body>
+
+</html>
